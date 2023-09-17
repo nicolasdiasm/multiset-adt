@@ -4,6 +4,21 @@ MultiSet ADT
 Note: you can open this project in PyCharm or your favourite IDE if you want
 to try running it.
 
+The output should look something like the below (timing will vary of course):
+
+  500       <class '__main__.TreeMultiSet'>  0.005346
+ 1000       <class '__main__.TreeMultiSet'>  0.016313
+ 2000       <class '__main__.TreeMultiSet'>  0.050477
+ 4000       <class '__main__.TreeMultiSet'>  0.143083
+  500  <class '__main__.ArrayListMultiSet'>  0.000093
+ 1000  <class '__main__.ArrayListMultiSet'>  0.000219
+ 2000  <class '__main__.ArrayListMultiSet'>  0.000665
+ 4000  <class '__main__.ArrayListMultiSet'>  0.001758
+  500 <class '__main__.LinkedListMultiSet'>  0.002770
+ 1000 <class '__main__.LinkedListMultiSet'>  0.008147
+ 2000 <class '__main__.LinkedListMultiSet'>  0.016326
+ 4000 <class '__main__.LinkedListMultiSet'>  0.049379
+
 You might also find it helpful to 'Split Right' or 'Split Down' in the editor by
 right-clicking the tab above with this file's name on it, to allow you to look at
 the python code as you write your corresponding Java code.
@@ -12,6 +27,7 @@ the python code as you write your corresponding Java code.
 from __future__ import annotations
 
 import random
+import time
 from typing import Any, Optional
 
 
@@ -463,8 +479,141 @@ class TreeMultiSet(MultiSet):
     def size(self) -> int:
         return len(self._tree)
 
-# TODO will add another couple of implementations that use
-#      a linked list and a python list to allow for more subtasks to work on
+
+class ArrayListMultiSet(MultiSet):
+
+    _list: list
+
+    def __init__(self):
+        self._list = []
+
+    def add(self, item: Any) -> bool:
+        self._list.append(item)
+        return True
+
+    def remove(self, item: Any) -> None:
+        # we check that the item exists to avoid raising a ValueError,
+        # since the MultiSet ADT doesn't say it will raise such an error!
+        if item in self._list:
+            self._list.remove(item)
+
+    def contains(self, item: Any) -> bool:
+        return item in self._list
+
+    def is_empty(self) -> bool:
+        return len(self._list) == 0
+
+    def count(self, item: Any) -> int:
+        return self._list.count(item)
+
+    def size(self) -> int:
+        return len(self._list)
+
+
+class LinkedListMultiSet(MultiSet):
+    """
+    Unlike the TreeMultiList, this implementation does not just "wrap" an
+    underlying tree, it is instead a custom LinkedList implementation, which
+    only provides the necessary MultiSet methods.
+
+    Representation Invariant:
+    self._front is None represents an empty MultiSet
+    """
+
+    _front: _Node | None
+    _size: int
+
+    def __init__(self):
+        self._front = None
+        self._size = 0
+
+    def add(self, item: Any) -> bool:
+        new_node = _Node(item)
+        new_node.next = self._front
+        self._front = new_node
+        self._size += 1
+        return True
+
+    def remove(self, item: Any) -> None:
+        cur = self._front
+        prev = None
+        while cur is not None:
+            if cur.item == item:
+                self._size -= 1
+                if prev:
+                    prev.next = cur.next
+                else:  # first item
+                    self._front = cur.next
+                return
+            prev, cur = cur, cur.next
+        # if here, item not found
+        return
+
+    def contains(self, item: Any) -> bool:
+        cur = self._front
+        while cur is not None:
+            if cur.item == item:
+                return True
+            cur = cur.next
+        return False
+
+    def is_empty(self) -> bool:
+        return self._front is None
+
+    def count(self, item: Any) -> int:
+        num_seen = 0
+        cur = self._front
+        while cur is not None:
+            if cur.item == item:
+                num_seen += 1
+            cur = cur.next
+        return num_seen
+
+    def size(self) -> int:
+        return self._size
+
+
+class _Node:
+    """
+    Internal node structure used by the LinkedListMultiSet above.
+    """
+    item: Any
+    next: _Node | None
+
+    def __init__(self, item: Any) -> None:
+        self.item = item
+        self.next = None
+
+
+def profileMultiSet(my_input: MultiSet, n: int) -> None:
+    """
+    Run the timing experiment for the given <my_input> MultiSet implementation,
+    for a problem size of <n>.
+    """
+    # add n random items, then remove them all; we will only time the removal
+    # step.
+    items_added = []
+    for i in range(n):
+        x = random.randint(0, 100)
+        my_input.add(x)
+        items_added.append(x)
+
+    # sanity check that we added n items
+    assert my_input.size() == n
+
+    start = time.time()
+
+    for x in items_added:
+        my_input.remove(x)
+
+    end = time.time()
+
+    # sanity check that we successfully removed all the items we had added!
+    assert my_input.is_empty()
+
+    # just print a quick summary of what we just ran
+    print(f'{n}'.rjust(5), f'{my_input.__class__}'.rjust(37),
+          f'{end - start : .6f}')
 
 
 # For the main block, some parts won't neatly translate to Java,
@@ -472,19 +621,15 @@ class TreeMultiSet(MultiSet):
 # and discuss what each part does and how one might do similar things in
 # Java.
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+    # import doctest
+    # doctest.testmod()
 
-    import python_ta
-    python_ta.check_all(config={'extra-imports': ['random']})
+    # we won't bother running pyTA for this :)
+    # import python_ta
+    # python_ta.check_all(config={'extra-imports': ['random']})
 
-    # TODO to still add the client profiler code...
-
-    # basic structure:
-
-    # create a list of the various kinds of MultiSet implementations to time
-
-    # loop through and time them
-
-    # display some meaningful output
-
+    # perform a little timing experiment
+    multisets = [TreeMultiSet(), ArrayListMultiSet(), LinkedListMultiSet()]
+    for multiset in multisets:
+        for n in [500, 1000, 2000, 4000]:
+            profileMultiSet(multiset, n)

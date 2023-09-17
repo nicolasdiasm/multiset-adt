@@ -72,7 +72,8 @@ https://github.com/CSC207-2023F-UofT/multiset-adt
 
 - [ ] Towards the end of the lab, your team should take some time to reflect on what worked well
   and where you encountered difficulty as you worked on the code and divided up tasks between each
-  of you.
+  of you. In particular, your group should think about how you kept track of who was working
+  on what. We encourage you to share your experiences with those around you.
 
 ### Initial Advice
 A few general strategies before we begin:
@@ -157,3 +158,10 @@ public and (2) default to making all instance attributes private unless you have
 We haven't talked about documentation much yet, but you can look at how existing Java code is
 documented to get a sense of the standards used. For example, if you hover over any class name
 in IntelliJ, what you see is the JavaDoc for that class (same idea as docstrings in Python)
+
+## Extra
+
+If your team does replicate the behaviour of the provided Python code, we encourage
+you to think about possible extensions to the structure of the code used to run
+the timing experiment. In particular, how could be make it more customizable and
+able to time other things?
