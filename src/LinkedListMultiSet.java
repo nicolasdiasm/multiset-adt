@@ -7,4 +7,10 @@
  */
 
 public class LinkedListMultiSet extends MultiSet {
+    /**
+     * Internal node structure used by the LinkedListMultiSet above.
+     */
+    private class Node{
+
+    }
 }
