@@ -7,4 +7,3 @@
 
 public class Tree {
 }
-    tree
