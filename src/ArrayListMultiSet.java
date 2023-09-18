@@ -1,2 +1,2 @@
-public class ArrayListMultiSet {
+public class ArrayListMultiSet extends MultiSet {
 }
