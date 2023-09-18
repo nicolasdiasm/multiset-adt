@@ -17,10 +17,10 @@ public class MultiSet {
     public boolean isEmpty() throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Accessing parent class");
     }
-    public boolean count(Object item) throws ExecutionControl.NotImplementedException {
+    public int count(Object item) throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Accessing parent class");
     }
-    public boolean size() throws ExecutionControl.NotImplementedException {
+    public int size() throws ExecutionControl.NotImplementedException {
         throw new ExecutionControl.NotImplementedException("Accessing parent class");
     }
 }
