@@ -11,6 +11,10 @@ public class LinkedListMultiSet extends MultiSet {
      * Internal node structure used by the LinkedListMultiSet above.
      */
     private class Node {
-
+        Object item;
+        Node next;
+        Node(Object obj) {
+            this.item = obj;
+        }
     }
 }
