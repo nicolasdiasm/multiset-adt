@@ -28,22 +28,51 @@ public class LinkedListMultiSet extends MultiSet {
 
     @Override
     public void remove(Object item) {
-
+        Node curr = this.front;
+        Node prev = null;
+        while (curr != null) {
+            if (curr.item == item) {
+                this.size -= 1;
+                if (prev != null) {
+                    prev.next = curr.next;
+                } else {
+                    this.front = curr.next;
+                }
+                return;
+            }
+            prev = curr;
+            curr = prev.next;
+        }
     }
 
     @Override
     public boolean contains(Object item) {
-        return true;
+        Node curr = this.front;
+        while (curr != null) {
+            if (curr.item == item) {
+                return true;
+            }
+            curr = curr.next;
+        }
+        return false;
     }
 
     @Override
     public boolean isEmpty() {
-        return true;
+        return this.front == null;
     }
 
     @Override
     public int count(Object item) {
-        return 0;
+        int result = 0;
+        Node curr = this.front;
+        while (curr != null) {
+            if (curr.item == item) {
+                result += 1;
+            }
+            curr = curr.next;
+        }
+        return result;
     }
 
     @Override
